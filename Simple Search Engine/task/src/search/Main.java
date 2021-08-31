@@ -1,5 +1,7 @@
 package search;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -7,27 +9,34 @@ public class Main {
     public static String[] data;
 
     public static void main(String[] args) {
-        // the function will take the data from the user and return an array of it.
-        data = fillData();
+        if (args[0].equals("--data") && !args[1].equals("")) {
+            // the function will take the data from the user and return an array of it.
+            data = fillData(args[1]);
+        }
+        if (data == null) {
+            System.out.println("Your file is empty or not found");
+        }
         state.start();
 
 
     }
 
-    public static String[] fillData() {
-        int N;
-        System.out.println("Enter the number of people:");
-        N = g.nextInt();
-        g.nextLine();
-        System.out.println("Enter all people:");
-        String[] people = new String[N];
-        int count = 0;
-        while (count != N) {
-            people[count] = g.nextLine();
-            count++;
+    public static String[] fillData(String path) {
+        try {
+            File file = new File(path);
+            Scanner reader = new Scanner(file);
+            ArrayList<String> info = new ArrayList<>();
+            while (reader.hasNextLine()) {
+                info.add(reader.nextLine());
+            }
+            reader.close();
+            return info.toArray(new String[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        return people.clone();
+        return null;
+
     }
 
     public static void search(String[] people) {
