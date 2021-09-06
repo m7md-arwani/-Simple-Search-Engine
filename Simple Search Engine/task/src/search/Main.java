@@ -1,12 +1,12 @@
 package search;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     static Scanner g = new Scanner(System.in);
-    public static String[] data;
+    public static String[] data; // Data to be searched
+    public static Map<String, List<Integer>> map = new HashMap<>();
 
     public static void main(String[] args) {
         if (args[0].equals("--data") && !args[1].equals("")) {
@@ -16,6 +16,9 @@ public class Main {
         if (data == null) {
             System.out.println("Your file is empty or not found");
         }
+        // This function takes care of filling the hashtable to be used later in search.
+        hashTable();
+
         state.start();
 
 
@@ -38,18 +41,36 @@ public class Main {
         return null;
 
     }
+    // The hash map will take the form <A word, the lines where it's available>
+    public static void hashTable() {
+        for (int i = 0; i < data.length; i++) {
+            String[] line = data[i].trim().split(" ");
+            for (int j = 0; j < line.length; j++) {
+                if (map.containsKey(line[j].toLowerCase())) {
+                    List<Integer> tmp = new ArrayList<>();
+                    tmp.add(i);
+                    tmp.addAll(map.get(line[j].toLowerCase()));
+                    map.put(line[j].toLowerCase(), tmp);
+                } else {
+                    map.put(line[j].toLowerCase(), new ArrayList<>(List.of(i)));
+                }
+            }
+        }
+    }
 
-    public static void search(String[] people) {
+    public static void search() {
 
 
         System.out.println("Enter a name or email to search all suitable");
-        String data = g.nextLine().trim().toLowerCase();
-        for (int i = 0; i < people.length; i++) {
-            if (people[i].toLowerCase().contains(data)) {
-                System.out.println(people[i]);
+        String toSearch = g.nextLine().trim().toLowerCase();
+        List<Integer> linesToPrint = map.get(toSearch.toLowerCase());
+        if (linesToPrint == null) {
+            System.out.println("No matching people found.");
+        } else {
+            System.out.println(linesToPrint.size() + " persons found:");
+            for (Integer LineNumbers : linesToPrint) {
+                System.out.println(data[LineNumbers]);
             }
-
-
         }
 
 
@@ -103,7 +124,7 @@ class state extends Main {
                 break;
             // From here, the cases will act according to the state that have been changed in the previous switch.
             case FIND_A_PERSON:
-                Main.search(data);
+                Main.search();
                 currentState = State.MENU;
                 break;
             case PRINT_ALL_PEOPLE:
