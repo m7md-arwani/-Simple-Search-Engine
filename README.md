@@ -3,8 +3,10 @@
 ## Description
 
 This project searches a text file that contains three fields in each line.
-An example would be "Mohammad Arwani Mohammad.arwani@ogr.altinbas.edu.tr"
-The program will search through the file using an algorithm of the choice.
+An example would be 
+
+"Mohammad Arwani Mohammad.arwani@ogr.altinbas.edu.tr"
+.The program will search through the file using the algorithm of choice.
 Three algorithms are available, ANY, NONE, ALL.
  
 
